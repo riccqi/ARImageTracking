@@ -18,12 +18,12 @@ struct ContentView : View {
 
 struct ARViewContainer: UIViewRepresentable {
     var arView = ARView(frame: .zero)
-    
+
     func makeCoordinator() -> Coordinator {
         Coordinator(parent: self)
     }
     
-    class Coordinator: NSObject, ARSessionDelegate {
+    class Coordinator: NSObject, ARSessionDelegate{
         var parent: ARViewContainer
         var videoPlayer: AVPlayer!
         
@@ -47,8 +47,9 @@ struct ARViewContainer: UIViewRepresentable {
             let playerItem = AVPlayerItem(url: videoURL)
             videoPlayer = AVPlayer(playerItem: playerItem)
             let videoMaterial = VideoMaterial(avPlayer: videoPlayer)
-            //Sets the aspect ratio of the video to be played
-            let videoPlane = ModelEntity(mesh: .generatePlane(width: 3, depth: 6.5), materials: [videoMaterial])
+            
+            //Sets the aspect ratio of the video to be played, and the corner radius of the video
+            let videoPlane = ModelEntity(mesh: .generatePlane(width: 3, depth: 6.5, cornerRadius: 0.3), materials: [videoMaterial])
             
             //Assigns reference image that will be detected
             if let imageName = imageAnchor.name, imageName  == "xs" {
@@ -76,7 +77,6 @@ struct ARViewContainer: UIViewRepresentable {
     }
     
     func makeUIView(context: Context) -> ARView {
-
         guard let referenceImages = ARReferenceImage.referenceImages(
                     inGroupNamed: "AR Resources", bundle: nil) else {
                     fatalError("Missing expected asset catalog resources.")
@@ -96,12 +96,11 @@ struct ARViewContainer: UIViewRepresentable {
         } else {
             print("People Segmentation not enabled.")
         }
-        
+
         arView.session.run(configuration)
         return arView
     }
     
     func updateUIView(_ uiView: ARView, context: Context) {}
-
 }
 
