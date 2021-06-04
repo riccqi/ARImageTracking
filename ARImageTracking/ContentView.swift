@@ -47,9 +47,13 @@ struct ARViewContainer: UIViewRepresentable {
             let playerItem = AVPlayerItem(url: videoURL)
             videoPlayer = AVPlayer(playerItem: playerItem)
             let videoMaterial = VideoMaterial(avPlayer: videoPlayer)
-            
+
+			// size of video plane depending of the image
+			let width: Float = Float(imageAnchor.referenceImage.physicalSize.width * 1.1)
+			let height: Float = Float(imageAnchor.referenceImage.physicalSize.height * 1.1)
+
             //Sets the aspect ratio of the video to be played, and the corner radius of the video
-            let videoPlane = ModelEntity(mesh: .generatePlane(width: 3, depth: 6.5, cornerRadius: 0.3), materials: [videoMaterial])
+            let videoPlane = ModelEntity(mesh: .generatePlane(width: width, depth: height, cornerRadius: 0.3), materials: [videoMaterial])
             
             //Assigns reference image that will be detected
             if let imageName = imageAnchor.name, imageName  == "xs" {
