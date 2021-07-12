@@ -49,8 +49,8 @@ struct ARViewContainer: UIViewRepresentable {
             let videoMaterial = VideoMaterial(avPlayer: videoPlayer)
 
 			// size of video plane depending of the image
-			let width: Float = Float(imageAnchor.referenceImage.physicalSize.width * 1.1)
-			let height: Float = Float(imageAnchor.referenceImage.physicalSize.height * 1.1)
+			let width: Float = Float(imageAnchor.referenceImage.physicalSize.width * 1.03)
+			let height: Float = Float(imageAnchor.referenceImage.physicalSize.height * 1.03)
 
             //Sets the aspect ratio of the video to be played, and the corner radius of the video
             let videoPlane = ModelEntity(mesh: .generatePlane(width: width, depth: height, cornerRadius: 0.3), materials: [videoMaterial])
