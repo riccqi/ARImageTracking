@@ -6,11 +6,11 @@
 //
 
 import ARKit
-import SwiftUI
 import RealityKit
+import SwiftUI
 
-//Displays as a SwiftUI View
-struct ContentView : View {
+// Displays as a SwiftUI View
+struct ContentView: View {
     var body: some View {
         return ARViewContainer().edgesIgnoringSafeArea(.all)
     }
@@ -23,7 +23,7 @@ struct ARViewContainer: UIViewRepresentable {
         Coordinator(parent: self)
     }
     
-    class Coordinator: NSObject, ARSessionDelegate{
+    class Coordinator: NSObject, ARSessionDelegate {
         var parent: ARViewContainer
         var videoPlayer: AVPlayer!
         
@@ -37,7 +37,7 @@ struct ARViewContainer: UIViewRepresentable {
                 return
             }
             
-            //Assigns video to be overlaid
+            // Assigns video to be overlaid
             guard let path = Bundle.main.path(forResource: "iphonevideo", ofType: "mp4") else {
                 print("Unable to find video file.")
                 return
@@ -48,30 +48,30 @@ struct ARViewContainer: UIViewRepresentable {
             videoPlayer = AVPlayer(playerItem: playerItem)
             let videoMaterial = VideoMaterial(avPlayer: videoPlayer)
 
-			// size of video plane depending of the image
-			let width: Float = Float(imageAnchor.referenceImage.physicalSize.width * 1.03)
-			let height: Float = Float(imageAnchor.referenceImage.physicalSize.height * 1.03)
+            // size of video plane depending of the image
+            let width = Float(imageAnchor.referenceImage.physicalSize.width * 1.03)
+            let height = Float(imageAnchor.referenceImage.physicalSize.height * 1.03)
 
-            //Sets the aspect ratio of the video to be played, and the corner radius of the video
+            // Sets the aspect ratio of the video to be played, and the corner radius of the video
             let videoPlane = ModelEntity(mesh: .generatePlane(width: width, depth: height, cornerRadius: 0.3), materials: [videoMaterial])
             
-            //Assigns reference image that will be detected
-            if let imageName = imageAnchor.name, imageName  == "xs" {
+            // Assigns reference image that will be detected
+            if let imageName = imageAnchor.name, imageName == "xs" {
                 let anchor = AnchorEntity(anchor: imageAnchor)
-                //Adds specified video to the anchor
+                // Adds specified video to the anchor
                 anchor.addChild(videoPlane)
                 parent.arView.scene.addAnchor(anchor)
             }
         }
         
-        //Checks for tracking status
+        // Checks for tracking status
         func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
             guard let imageAnchor = anchors[0] as? ARImageAnchor else {
                 print("Problems loading anchor.")
                 return
             }
             
-            //Plays/pauses the video when tracked/loses tracking
+            // Plays/pauses the video when tracked/loses tracking
             if imageAnchor.isTracked {
                 videoPlayer.play()
             } else {
@@ -82,11 +82,12 @@ struct ARViewContainer: UIViewRepresentable {
     
     func makeUIView(context: Context) -> ARView {
         guard let referenceImages = ARReferenceImage.referenceImages(
-                    inGroupNamed: "AR Resources", bundle: nil) else {
-                    fatalError("Missing expected asset catalog resources.")
-                }
+            inGroupNamed: "AR Resources", bundle: nil)
+        else {
+            fatalError("Missing expected asset catalog resources.")
+        }
         
-        //Assigns coordinator to delegate the AR View
+        // Assigns coordinator to delegate the AR View
         arView.session.delegate = context.coordinator
         
         let configuration = ARImageTrackingConfiguration()
@@ -94,7 +95,7 @@ struct ARViewContainer: UIViewRepresentable {
         configuration.trackingImages = referenceImages
         configuration.maximumNumberOfTrackedImages = 1
         
-        //Enables People Occulusion on supported iOS Devices
+        // Enables People Occulusion on supported iOS Devices
         if ARWorldTrackingConfiguration.supportsFrameSemantics(.personSegmentationWithDepth) {
             configuration.frameSemantics.insert(.personSegmentationWithDepth)
         } else {
@@ -107,4 +108,3 @@ struct ARViewContainer: UIViewRepresentable {
     
     func updateUIView(_ uiView: ARView, context: Context) {}
 }
-
